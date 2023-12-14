@@ -10,8 +10,8 @@ def main():
     pygame.init()
     music = [pygame.mixer.Sound('Options/GFF.ogg'), pygame.mixer.Sound('Options/BW.ogg'),
              pygame.mixer.Sound('Options/RX.ogg'), pygame.mixer.Sound('Options/BS.ogg'),
-             pygame.mixer.Sound('Options/MZ.ogg')]
-
+             pygame.mixer.Sound('Options/MZ.ogg')] 
+    # массив разных песен, одна из которых произвольным выбирается далее
     s = random.choice(music)
     s.play()
 
