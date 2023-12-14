@@ -1,24 +1,27 @@
 import pygame
 import pymunk
+
+
 class TetrisShape:
     def __init__(self, body: pymunk.Body):
-        self._body = body
-        self._landed = False
-        self._sleep_time = 1000
-        self._sleep_start_time = 0
-        self._is_sleeping = False
-        self._is_done = False
+        self._body = body  # Экземпляр тела Pymunk, представляющий фигуру Тетриса.
+        self._landed = False  # Флаг, указывающий, приземлилась ли фигура.
+        self._sleep_time = 1000  # Время ожидания после приземления перед завершением жизненного цикла.
+        self._sleep_start_time = 0  # Время начала ожидания после приземления.
+        self._is_sleeping = False  # Флаг, указывающий, находится ли фигура в состоянии ожидания.
+        self._is_done = False  # Флаг,указывающий,завершен ли жизненный цикл фигуры.
         self._move_speed = 2
-        self._dead = False
-        self._fall_speed = 200
-        self._landed_position = 0, 0
-        self._dead_distance = 50
-        self._stop_magnitude = 10
-        self._landed_mass = 10
-        self._landed_friction = 10
-        self._landed_collision_type = 1
+        self._dead = False  # Флаг, указывающий, мертва ли фигура.
+        self._fall_speed = 200  # Скорость падения фигуры.
+        self._landed_position = 0, 0  # Позиция, на которой фигура приземлилась.
+        self._dead_distance = 50  # Расстояние, после которого фигура считается мертвой.
+        self._stop_magnitude = 10  # Минимальная скорость, при которой фигура считается остановившейся.
+        self._landed_mass = 10  # Масса фигуры после приземления.
+        self._landed_friction = 10  # Коэффициент трения фигуры после приземления.
+        self._landed_collision_type = 1  # Тип столкновения для приземленной фигуры.
 
     def update(self, left_boundary, right_boundary):
+        # Метод для обновления состояния фигуры.
         if self._is_done:
             return
 
@@ -42,15 +45,19 @@ class TetrisShape:
             self._handle_input(left_boundary, right_boundary)
 
     def crossed_boundary(self, left_boundary, right_boundary):
+        # Проверяет, пересекла ли фигура указанные границы.
         return self._body.position.x <= left_boundary or self._body.position.x >= right_boundary
 
     def get_height(self):
+        # Возвращает текущую высоту фигуры.
         return self._body.position.y
 
     def dead(self):
+        # Возвращает True, если фигура мертва.
         return self._dead
 
     def handle_collisions(self, arbiter: pymunk.arbiter.Arbiter, space, data):
+        # Обрабатывает столкновения для фигуры(создается при начале столкновения и сохраняются до тех пор, пока не будет столкновений).
         if self._landed:
             return
         self._landed_position = self._body.position
@@ -61,9 +68,11 @@ class TetrisShape:
             shape.mass = self._landed_mass
 
     def is_done(self):
+        # Возвращает True, если жизненный цикл фигуры завершен.
         return self._is_done
 
     def _handle_input(self, left_boundary, right_boundary):
+        # Приватный метод для обработки ввода пользователя.
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
             if self._body.position.x > left_boundary:
@@ -71,10 +80,10 @@ class TetrisShape:
         elif keys[pygame.K_d]:
             if self._body.position.x < right_boundary:
                 self._body.position = self._body.position.x + self._move_speed, self._body.position.y
-        pymunk.Space.reindex_shapes_for_body(self._body.space, self._body)
+        pymunk.Space.reindex_shapes_for_body(self._body.space, self._body)  # Обновление данных обнаружения столкновений
 
-    @staticmethod
     def create_shape(space, vertices, color, x, y, width, height):
+        # Создает экземпляр фигуры TetrisShape в пространстве Pymunk.
         body = pymunk.Body()
 
         body.position = x, y
