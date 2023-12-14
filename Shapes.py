@@ -57,7 +57,7 @@ class TetrisShape:
         return self._dead
 
     def handle_collisions(self, arbiter: pymunk.arbiter.Arbiter, space, data):
-        # Обрабатывает столкновения для фигуры(создается при начале столкновения и сохраняются до тех пор, пока не будет столкновений).
+        # Обрабатывает столкновения для фигуры(создается при начале столкновения).
         if self._landed:
             return
         self._landed_position = self._body.position
